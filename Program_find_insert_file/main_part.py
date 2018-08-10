@@ -113,14 +113,14 @@ open_main_task()
 # wb = xw.Book('Уралтест.xlsx')
 # xw.Range('A1').value = 'Foo'
 
-rb = xlrd.open_workbook('Уралтест.xlsx')
+# rb = xlrd.open_workbook('Уралтест.xlsx')
 
 #выбираем активный лист
-sheet = rb.sheet_by_index(0)
-i = 0
-while i < 1000:
-    i += 1
-    cell = sheet.row_values(i)[0]
-    if cell.value:
-        print (i)
-        break
+# sheet = rb.sheet_by_index(0)
+# i = 0
+# while i < 1000:
+#     i += 1
+#     cell = sheet.row_values(i)[0]
+#     if cell.value:
+#         print (i)
+#         break
