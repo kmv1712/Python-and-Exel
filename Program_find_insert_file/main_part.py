@@ -124,3 +124,4 @@ while i < 1000:
     if cell.value:
         print (i)
         break
+        for i in maintrack
