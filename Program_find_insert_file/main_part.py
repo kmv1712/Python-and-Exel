@@ -3,6 +3,8 @@ import xlrd, xlwt
 import re
 import xlwings as xw
 
+# Выбранна чтраница Уралтест в основной таблице
+name_sheet = 0
 # print(os.getcwd())
 # print(os.listdir(path="./transform_Exel"))
 name_f_account_info_two_part = os.listdir(path="./transform_Exel")
@@ -85,7 +87,7 @@ def seach_need_info_in_account_f(info_in_account_f_Exel):
 def open_main_task():
     name_main_task = os.getcwd() + '\\Уралтест.xlsx'
     open_main_task = xlrd.open_workbook(name_main_task)
-    sheet_main_task = open_main_task.sheet_by_index(0)
+    sheet_main_task = open_main_task.sheet_by_index(name_sheet )
     # получаем значение первой ячейки A1
     # val = sheet_f_account.row_values(0)[0]
     # print(val)
@@ -94,13 +96,18 @@ def open_main_task():
     print(info_in_main_task_Exel)
 
 
-
-
-
-
-
-
-
+# Вылавливаем ошибку для нахождения последней строки и вычетаем 1 для продолжения работы программы
+# Находим пустую строку в тексте
+def get_empty_line_in_table():
+    try:
+        rb = xlrd.open_workbook('Уралтест.xlsx')
+        # выбираем активный лист
+        sheet = rb.sheet_by_index(name_sheet)
+        for i in range(0, 1000000000000):
+            sheet.row_values(i)[0]
+    except:
+        i = i + 1
+        return i
 
 # Функция добавления информации в таблицу
 # def add_info_in_main_f():
@@ -108,12 +115,23 @@ def open_main_task():
 
 # all_list_name_account_date_nds = seach_need_info_in_account_f(info_in_account_f_Exel)
 # print(all_list_name_account_date_nds)
-open_main_task()
 
-# wb = xw.Book('Уралтест.xlsx')
-# xw.Range('A1').value = 'Foo'
+#Функция возращает список с даными с листа
+# open_main_task()
 
-# rb = xlrd.open_workbook('Уралтест.xlsx')
+empty_line_in_table = get_empty_line_in_table()
+# print(empty_line_in_table)
 
-# выбираем активный лист
-# sheet = rb.sheet_by_index(0)
+"""Вставляем значение в файл Уралтест
+Счет на оплату
+(A)прибор
+(E)номер
+(F)дата
+(G)Сумма с НДС
+"""
+
+wb = xw.Book('Уралтест.xlsx')
+xw.Range('A'+ str(empty_line_in_table)).value = '1'
+xw.Range('E'+ str(empty_line_in_table)).value = '2'
+xw.Range('F'+ str(empty_line_in_table)).value = '3'
+xw.Range('G'+ str(empty_line_in_table)).value = '4'
