@@ -123,3 +123,4 @@ while i < 1000:
     cell = sheet.row_values(i)[0]
     if cell.value:
         print (i)
+        break
