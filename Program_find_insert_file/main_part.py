@@ -109,18 +109,6 @@ def get_empty_line_in_table():
         i = i + 1
         return i
 
-# Функция добавления информации в таблицу
-# def add_info_in_main_f():
-
-
-# all_list_name_account_date_nds = seach_need_info_in_account_f(info_in_account_f_Exel)
-# print(all_list_name_account_date_nds)
-
-#Функция возращает список с даными с листа
-# open_main_task()
-
-empty_line_in_table = get_empty_line_in_table()
-# print(empty_line_in_table)
 
 """Вставляем значение в файл Уралтест
 Счет на оплату
@@ -129,9 +117,30 @@ empty_line_in_table = get_empty_line_in_table()
 (F)дата
 (G)Сумма с НДС
 """
+def add_info_in_main_f(empty_line_in_table):
+    wb = xw.Book('Уралтест.xlsx')
+    xw.Range('A'+ str(empty_line_in_table)).value = '1'
+    xw.Range('E'+ str(empty_line_in_table)).value = '2'
+    xw.Range('F'+ str(empty_line_in_table)).value = '3'
+    xw.Range('G'+ str(empty_line_in_table)).value = '4'
 
-wb = xw.Book('Уралтест.xlsx')
-xw.Range('A'+ str(empty_line_in_table)).value = '1'
-xw.Range('E'+ str(empty_line_in_table)).value = '2'
-xw.Range('F'+ str(empty_line_in_table)).value = '3'
-xw.Range('G'+ str(empty_line_in_table)).value = '4'
+# Функция выводит список в списке с дангыми номер, дата, прибор, сумма с НДС
+all_list_name_account_date_nds = seach_need_info_in_account_f(info_in_account_f_Exel)
+# print(all_list_name_account_date_nds)
+
+
+# Подумать о том как all_list_name_account_date_nds[0] расформировать по спискам с 4 элесентами для
+# подставления значений в таблицу через функцию add_info_in_main_f(empty_line_in_table)
+for item in all_list_name_account_date_nds[0]:
+    print (item)
+
+
+#Функция возращает список с даными с листа
+# open_main_task()
+
+empty_line_in_table = get_empty_line_in_table()
+# print(empty_line_in_table)
+
+# Функция добавления информации в таблицу
+# add_info_in_main_f(empty_line_in_table)
+
