@@ -1,5 +1,5 @@
 import os
-import xlrd, xlwt
+import xlrd
 import re
 import xlwings as xw
 
@@ -26,6 +26,7 @@ sheet_f_account = open_f_account.sheet_by_index(0)
 info_in_account_f_Exel = [sheet_f_account.row_values(rownum) for rownum in range(sheet_f_account.nrows)]
 # print(info_in_account_f_Exel)
 
+
 """
 Модуль для поиска информации в exel файле счета
 Обратить внимание, что иногда распознается с ошибками
@@ -41,10 +42,11 @@ def get_number_account(item_one_info_in_account_f_Exel):
 
 
 # Поиск даты счета
+# Продумать как преобразовать 10 января 2018 в 10.01.2018
+# 11082018---------------1603
 def get_date_account(item_one_info_in_account_f_Exel):
     date_account = re.findall('(\d\d\s\w\w+\s\d\d\d\d)', item_one_info_in_account_f_Exel)
     return date_account[0]
-
 
 
 # Функция возращает список из (номер счета, дата, прибор, сумма с НДС)
@@ -83,11 +85,12 @@ def seach_need_info_in_account_f(info_in_account_f_Exel):
 
     return all_list_name_account_date_nds
 
+
 # Функция открытия основной таблицы Уралтест.xlsx
 def open_main_task():
     name_main_task = os.getcwd() + '\\Уралтест.xlsx'
     open_main_task = xlrd.open_workbook(name_main_task)
-    sheet_main_task = open_main_task.sheet_by_index(name_sheet )
+    sheet_main_task = open_main_task.sheet_by_index(name_sheet)
     # получаем значение первой ячейки A1
     # val = sheet_f_account.row_values(0)[0]
     # print(val)
@@ -109,18 +112,25 @@ def get_empty_line_in_table():
         i = i + 1
         return i
 
-# Функция добавления информации в таблицу
-# def add_info_in_main_f():
+
+"""Функция генерирует список all_list_name_account_date_nds
+по след маске [[номер_счета, дата, прибор, сумма с НДС], [-и-], ...]
+"""
 
 
-# all_list_name_account_date_nds = seach_need_info_in_account_f(info_in_account_f_Exel)
-# print(all_list_name_account_date_nds)
+def get_sort_all_list_name_account_date_nds(all_list_name_account_date_nds):
+    n = 0
+    j = 4
+    sort_all_list_name_account_date_nds = []
+    count_insert_list = len(all_list_name_account_date_nds[0]) / 4
+    # print(count_insert_list)
+    # print(len(all_list_name_account_date_nds[0]))
+    for i in range(0, int(count_insert_list)):
+        sort_all_list_name_account_date_nds.append(all_list_name_account_date_nds[0][n:j])
+        n = n + 4
+        j = j + 4
+    return (sort_all_list_name_account_date_nds)
 
-#Функция возращает список с даными с листа
-# open_main_task()
-
-empty_line_in_table = get_empty_line_in_table()
-# print(empty_line_in_table)
 
 """Вставляем значение в файл Уралтест
 Счет на оплату
@@ -128,10 +138,36 @@ empty_line_in_table = get_empty_line_in_table()
 (E)номер
 (F)дата
 (G)Сумма с НДС
+список вида [[номер_счета, дата, прибор, сумма с НДС], [-и-], ...]
 """
 
-wb = xw.Book('Уралтест.xlsx')
-xw.Range('A'+ str(empty_line_in_table)).value = '1'
-xw.Range('E'+ str(empty_line_in_table)).value = '2'
-xw.Range('F'+ str(empty_line_in_table)).value = '3'
-xw.Range('G'+ str(empty_line_in_table)).value = '4'
+# Продумать закрытие и сохранение занесеных данных
+# 11082018---------------1603
+def add_info_in_main_f(empty_line_in_table, sort_all_list_name_account_date_nds):
+    xw.Book('Уралтест.xlsx')
+    for i in range(0, len(sort_all_list_name_account_date_nds)):
+        xw.Range('A' + str(empty_line_in_table)).value = sort_all_list_name_account_date_nds[i][2]
+        xw.Range('E' + str(empty_line_in_table)).value = sort_all_list_name_account_date_nds[i][0]
+        xw.Range('F' + str(empty_line_in_table)).value = sort_all_list_name_account_date_nds[i][1]
+        xw.Range('G' + str(empty_line_in_table)).value = sort_all_list_name_account_date_nds[i][3]
+        empty_line_in_table = empty_line_in_table + 1
+
+
+# Функция выводит список в списке с дангыми номер, дата, прибор, сумма с НДС
+all_list_name_account_date_nds = seach_need_info_in_account_f(info_in_account_f_Exel)
+# print(all_list_name_account_date_nds)
+
+# Функция возращает список с даными с листа
+# open_main_task()
+
+# Возращает номер последней строки таблицы
+empty_line_in_table = get_empty_line_in_table()
+# print(empty_line_in_table)
+
+# Функция возращает список вида [[номер_счета, дата, прибор, сумма с НДС], [-и-], ...]
+sort_all_list_name_account_date_nds = get_sort_all_list_name_account_date_nds(all_list_name_account_date_nds)
+# print(sort_all_list_name_account_date_nds)
+
+
+# Функция добавления информации в таблицу
+add_info_in_main_f(empty_line_in_table, sort_all_list_name_account_date_nds)
