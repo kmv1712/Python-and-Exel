@@ -42,11 +42,47 @@ def get_number_account(item_one_info_in_account_f_Exel):
 
 
 # Поиск даты счета
-# Продумать как преобразовать 10 января 2018 в 10.01.2018
+# Продумать как преобразовать 10 января 2018 в 10.01.2018 ---- СДЕЛАЛ 15082018
+''' 15.08.
+1) Оптимизировать (сделать код более компактным за счет list compression)
+2) Сделать отдельную фунцию на обработку даты (добавить различные варианты для обработки месяца)
+3) Продумать, как собирать данные с ошибочным распознанием и применить их при дальнейшем использование программы 
+пример: распознал июл1 надо чтобы мы сохранили этот вариант и при следующем таком распознание мы получили 07, а не вариант с возможностью занести инф. самим
+'''
 # 11082018---------------1603
 def get_date_account(item_one_info_in_account_f_Exel):
     date_account = re.findall('(\d\d\s\w\w+\s\d\d\d\d)', item_one_info_in_account_f_Exel)
-    return date_account[0]
+    for date_account_one in date_account:
+        date_account = date_account_one
+    date_account = date_account.split(' ') 
+    if date_account [1] == 'января':
+        date_account [1] = '01'
+    elif date_account [1] == 'февраля':
+        date_account [1] = '02'
+    elif date_account [1] == 'марта':
+        date_account [1] = '03'
+    elif date_account [1] == 'апреля':
+        date_account [1] = '04'
+    elif date_account [1] == 'мая':
+        date_account [1] = '05'
+    elif date_account [1] == 'июня':
+        date_account [1] = '06'
+    elif date_account [1] == 'июля':
+        date_account [1] = '07'
+    elif date_account [1] == 'августа':
+        date_account [1] = '08'    
+    elif date_account [1] == 'сентября':
+        date_account [1] = '09'
+    elif date_account [1] == 'октября':
+        date_account [1] = '10'
+    elif date_account [1] == 'ноября':
+        date_account [1] = '11'
+    elif date_account [1] == 'декабря':
+        date_account [1] = '12'
+    else:
+        date_account [1] = input ('На экране указан нераспознаный месяц, если вы не можете его индефецировать то введите две цифры, соответсвующие этому месяцу, пример: 02')
+    date_account = (str(date_account [0]) + '.' + date_account [1] + '.' + str(date_account [2])) 
+    return date_account
 
 
 # Функция возращает список из (номер счета, дата, прибор, сумма с НДС)
@@ -82,7 +118,6 @@ def seach_need_info_in_account_f(info_in_account_f_Exel):
     else:
         print('Ошибка просим обратить внимание на распознанты файл в название не правильно распозналось слово СЧЕТ '
               'или в таблицы не верно распознались ШТ')
-
     return all_list_name_account_date_nds
 
 
@@ -116,8 +151,6 @@ def get_empty_line_in_table():
 """Функция генерирует список all_list_name_account_date_nds
 по след маске [[номер_счета, дата, прибор, сумма с НДС], [-и-], ...]
 """
-
-
 def get_sort_all_list_name_account_date_nds(all_list_name_account_date_nds):
     n = 0
     j = 4
@@ -140,9 +173,8 @@ def get_sort_all_list_name_account_date_nds(all_list_name_account_date_nds):
 (G)Сумма с НДС
 список вида [[номер_счета, дата, прибор, сумма с НДС], [-и-], ...]
 """
-
 # Продумать закрытие и сохранение занесеных данных
-# 11082018---------------1603
+# 1508 Продумать чтобы данные заносились в ячейки и фильтр их сортировал верно
 def add_info_in_main_f(empty_line_in_table, sort_all_list_name_account_date_nds):
     xw.Book('Уралтест.xlsx')
     for i in range(0, len(sort_all_list_name_account_date_nds)):
@@ -167,7 +199,6 @@ empty_line_in_table = get_empty_line_in_table()
 # Функция возращает список вида [[номер_счета, дата, прибор, сумма с НДС], [-и-], ...]
 sort_all_list_name_account_date_nds = get_sort_all_list_name_account_date_nds(all_list_name_account_date_nds)
 # print(sort_all_list_name_account_date_nds)
-
 
 # Функция добавления информации в таблицу
 add_info_in_main_f(empty_line_in_table, sort_all_list_name_account_date_nds)
