@@ -55,8 +55,6 @@ def get_all_list_leader_in_doc(empty_line_in_table, info_in_f_Ecxel):
     for i in range(2, empty_line_in_table):
         list_leader = []
         # print(info_in_f_Ecxel[i])
-        name_leader = info_in_f_Ecxel[i][1]
-        date_finish_plan = info_in_f_Ecxel[i][2]
         date_finish_fact = info_in_f_Ecxel[i][3]
         if date_finish_fact != '':
             name_leader = info_in_f_Ecxel[i][1]
@@ -85,3 +83,9 @@ for name_file in name_file_with_inf:
     empty_line_in_table = get_empty_line_in_table(useful_sheet, name_dir, name_file)
     all_list_leader_in_doc = get_all_list_leader_in_doc(empty_line_in_table, info_in_f_Ecxel)
     print(all_list_leader_in_doc)
+
+list_name_leader_one = []
+for num_list in range(0, len(all_list_leader_in_doc) - 1):
+    list_name_leader_one.append(all_list_leader_in_doc[num_list][0])
+print(list_name_leader_one)
+# НЕОБХОДИМО ПОЛУЧИТЬ СПИСОК ФАМИЛИЙ ИЗ ОБЩЕГО СПИСКА т.е. убрать дубли
