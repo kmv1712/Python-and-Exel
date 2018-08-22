@@ -1,14 +1,20 @@
 import os
 import xlrd
 
-# Выбираем лист с полезной информацией (ЛИСТ1)
-useful_sheet = 0
-# Название файла с EСXEL документами
-name_dir = 'staff_efficiency'
-# Получаем список названий файлов
-name_file_with_inf = os.listdir(path="./" + name_dir)
-# print(name_file_with_inf )
-all_list_leader_in_doc = []
+def get_all_list_leader_in_doc(empty_line_in_table, info_in_f_Ecxel):
+    # Выбираем лист с полезной информацией (ЛИСТ1)
+    useful_sheet = 0
+    # Название файла с EСXEL документами
+    name_dir = 'staff_efficiency'
+    # Получаем список названий файлов
+    name_file_with_inf = os.listdir(path="./" + name_dir)22
+    # print(name_file_with_inf )
+    all_list_leader_in_doc = []
+    for name_file in name_file_with_inf:
+        info_in_f_Ecxel = get_info_in_f_Ecxel(useful_sheet, name_dir, name_file)
+        empty_line_in_table = get_empty_line_in_table(useful_sheet, name_dir, name_file)
+        all_list_leader_in_doc = get_all_list_leader_in_doc(empty_line_in_table, info_in_f_Ecxel)
+    return all_list_leader_in_doc 
 
 '''Поиск пустой строки в таблице 
 useful_sheet - страница на которой ищем пустую строку
@@ -93,7 +99,7 @@ def get_list_leader(all_list_leader_in_doc):
 Для получения списка вида
 [[ФИО, кол-во проектов, кол-во вовремя завершенных проектов, кол-во не вовремя завершенные проектов], ...]
 all_list_leader_in_doc см.функцию get_all_list_leader_in_doc - Получаем список всех руководителей с указанием успешности выполнения проектов
-Улучшит: оптимизировать код (получать значения путем групировки списка all_list_leader_in_doc)
+Улучшит: оптимизировать код (получать значения путем группировки списка all_list_leader_in_doc)
 '''
 def get_list_with_eff_leader(all_list_leader_in_doc):
     list_leader = get_list_leader(all_list_leader_in_doc)
@@ -138,7 +144,6 @@ list_with_eff_leader_and_percent  [['Ф.И.О', 'кол-во проектов' ,
 '''
 
 def print_list_leader (list_with_eff_leader_and_percent):    
-    print('Список ответсвенныз за проект выполняющих задание в срок')  
     # print(list_with_eff_leader)
     n = input('Сортировать специалиста в качестве руководителя по имени (1), по кол-ву проектов (2), по кол-ву проектов вып. в срок (3),  по кол-ву проектов вып. не в срок(4),по проценту выполения проекта в срок(5): ')
     n = int(n)-1
@@ -147,19 +152,14 @@ def print_list_leader (list_with_eff_leader_and_percent):
     t = 1
     list_with_eff_leader.sort(key = lambda i: i[n], reverse=t)
     print('%20s | %15s | %15s | %10s | %15s  ' % ('Ф.И.О', 'кол-во проектов' , 'вып. в срок ','вып. не в срок','проценту выполения проекта в срок'))
-    for i in list_with_eff_leader:
-        
+    for i in list_with_eff_leader:        
         print('%20s | %15d | %15d | %10d | %15d  ' % (str(i[0]),i[1],i[2],i[3],i[4]))
 
-for name_file in name_file_with_inf:
-    info_in_f_Ecxel = get_info_in_f_Ecxel(useful_sheet, name_dir, name_file)
-    empty_line_in_table = get_empty_line_in_table(useful_sheet, name_dir, name_file)
-    all_list_leader_in_doc = get_all_list_leader_in_doc(empty_line_in_table, info_in_f_Ecxel)
+all_list_leader_in_doc = get_all_list_leader_in_doc(empty_line_in_table, info_in_f_Ecxel)
 list_with_eff_leader = get_list_with_eff_leader(all_list_leader_in_doc)
-list_with_eff_leader_and_percent = add_percent_eff(list_with_eff_leader)
-
-        
+list_with_eff_leader_and_percent = add_percent_eff(list_with_eff_leader)      
 print_list_leader (list_with_eff_leader_and_percent) 
+
 
 
 
