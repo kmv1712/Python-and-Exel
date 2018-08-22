@@ -42,7 +42,7 @@ def get_info_in_f_Ecxel(useful_sheet, name_dir, name_file):
     return info_in_f_Ecxel
 
 
-'''Получаем список всех руководителей с указанием выполнения проекта 
+'''Получаем список всех руководителей с указанием успешности выполнения проектов 
 [Иванов, 1, 0] - проект выполнен в срок
 [Иванов, 0, 1] - проект не выполнен в срок
 Пример итог. вывода: [['Иванов Р.А.', 1, 0], ['Сидоров М.В.', 0, 1] ....]
@@ -77,15 +77,48 @@ def get_all_list_leader_in_doc(empty_line_in_table, info_in_f_Ecxel):
             continue
     return all_list_leader_in_doc
 
+''' 
+Для получения списка персонала 
+all_list_leader_in_doc см.функцию get_all_list_leader_in_doc - Получаем список всех руководителей с указанием успешности выполнения проектов
+'''
+def get_list_leader(all_list_leader_in_doc):
+    list_name_leader_one = []
+    for num_list in range(0, len(all_list_leader_in_doc) - 1):
+        list_name_leader_one.append(all_list_leader_in_doc[num_list][0])
+    #print(list_name_leader_one)
+    list_leader = list(set(list_name_leader_one))
+    return list_leader
+
+''' 
+Для получения списка вида
+[[ФИО, кол-во проектов, кол-во вовремя завершенных проектов, кол-во не вовремя завершенные проектов], ...]
+all_list_leader_in_doc см.функцию get_all_list_leader_in_doc - Получаем список всех руководителей с указанием успешности выполнения проектов
+Улучшит: оптимизировать код (получать значения путем групировки списка all_list_leader_in_doc)
+'''
+def get_list_with_eff_leader(all_list_leader_in_doc):
+    list_leader = get_list_leader(all_list_leader_in_doc)
+    list_with_eff_leader = [[item_list_leader, 0, 0, 0] for item_list_leader in list_leader]
+#     print(list_with_eff_leader)
+    for item_list_leader in list_leader:
+        for item_all_list_leader_in_doc in all_list_leader_in_doc:
+            if item_list_leader == item_all_list_leader_in_doc[0]:
+                for i_eff_leader in range(0, len(list_with_eff_leader)):
+                    if list_with_eff_leader [i_eff_leader][0] == item_list_leader:
+                        list_with_eff_leader [i_eff_leader][1] += 1
+                        if item_all_list_leader_in_doc[1] == 1:
+                            list_with_eff_leader [i_eff_leader][2] += 1
+                        elif item_all_list_leader_in_doc[2] == 1:
+                            list_with_eff_leader [i_eff_leader][3] += 1
+    return list_with_eff_leader
+
 
 for name_file in name_file_with_inf:
     info_in_f_Ecxel = get_info_in_f_Ecxel(useful_sheet, name_dir, name_file)
     empty_line_in_table = get_empty_line_in_table(useful_sheet, name_dir, name_file)
     all_list_leader_in_doc = get_all_list_leader_in_doc(empty_line_in_table, info_in_f_Ecxel)
-    print(all_list_leader_in_doc)
+list_with_eff_leader = get_list_with_eff_leader(all_list_leader_in_doc)
 
-list_name_leader_one = []
-for num_list in range(0, len(all_list_leader_in_doc) - 1):
-    list_name_leader_one.append(all_list_leader_in_doc[num_list][0])
-print(list_name_leader_one)
-# НЕОБХОДИМО ПОЛУЧИТЬ СПИСОК ФАМИЛИЙ ИЗ ОБЩЕГО СПИСКА т.е. убрать дубли
+
+print('Список специалистов выполняющих задание в срок')  
+print(list_with_eff_leader)
+# Отсортировать список по соотношению (2 - 3)/1
