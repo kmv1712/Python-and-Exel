@@ -151,9 +151,9 @@ def print_list_leader (list_with_eff_leader_and_percent):
     # t = int(t)
     t = 1
     list_with_eff_leader.sort(key = lambda i: i[n], reverse=t)
-    print('%20s | %15s | %15s | %10s | %15s  ' % ('Ф.И.О', 'кол-во проектов' , 'вып. в срок ','вып. не в срок','проценту выполения проекта в срок'))
+    print('%20s | %15s | %15s | %15s | %15s  ' % ('Ф.И.О', 'кол-во проектов' , 'вып. в срок ','вып. не в срок','проценту выполения проекта в срок'))
     for i in list_with_eff_leader:        
-        print('%20s | %15d | %15d | %10d | %15d  ' % (str(i[0]),i[1],i[2],i[3],i[4]))
+        print('%20s | %15d | %15d | %15d | %15d  ' % (str(i[0]),i[1],i[2],i[3],i[4]))
 
 all_list_leader_in_doc = get_all_list_leader_in_doc(empty_line_in_table, info_in_f_Ecxel)
 list_with_eff_leader = get_list_with_eff_leader(all_list_leader_in_doc)
