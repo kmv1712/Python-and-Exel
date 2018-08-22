@@ -111,24 +111,58 @@ def get_list_with_eff_leader(all_list_leader_in_doc):
                             list_with_eff_leader [i_eff_leader][3] += 1
     return list_with_eff_leader
 
+''' 
+Добавляем колонку с процентами характеризующих выполения проекта в срок.
+list_with_eff_leader  [['Ф.И.О', 'кол-во проектов' , 'вып. в срок ','вып. не в срок'], ....]
+'''
+
+def add_percent_eff(list_with_eff_leader):
+    list_with_eff_leader_and_percent = []
+    # print(list_with_eff_leader)
+    for item_list_with_eff_leader in list_with_eff_leader:
+    #     print(item_list_with_eff_leader)
+        percent_eff = round(((item_list_with_eff_leader[1] - item_list_with_eff_leader[3]) / item_list_with_eff_leader[1]) * 100, 2)
+        item_list_with_eff_leader.append(percent_eff)
+        list_with_eff_leader_and_percent.append(item_list_with_eff_leader)
+    return list_with_eff_leader_and_percent
+
+''' 
+Выводим список ответсвенных за проект
+отсортированых по
+(1) по имени
+(2) по кол-ву проектов
+(3) по кол-ву проектов вып. в срок.
+(4) по кол-ву проектов не вып. в срок.
+(5) по проценту выполения проекта в срок.
+list_with_eff_leader_and_percent  [['Ф.И.О', 'кол-во проектов' , 'вып. в срок ','вып. не в срок','проценту выполения проекта в срок'], ....]
+'''
+
+def print_list_leader (list_with_eff_leader_and_percent):    
+    print('Список ответсвенныз за проект выполняющих задание в срок')  
+    # print(list_with_eff_leader)
+    n = input('Сортировать специалиста в качестве руководителя по имени (1), по кол-ву проектов (2), по кол-ву проектов вып. в срок (3),  по кол-ву проектов вып. не в срок(4),по проценту выполения проекта в срок(5): ')
+    n = int(n)-1
+    # t = input('По возрастанию (0), по убыванию (1): ')
+    # t = int(t)
+    t = 1
+    list_with_eff_leader.sort(key = lambda i: i[n], reverse=t)
+    print('%20s | %15s | %15s | %10s | %15s  ' % ('Ф.И.О', 'кол-во проектов' , 'вып. в срок ','вып. не в срок','проценту выполения проекта в срок'))
+    for i in list_with_eff_leader:
+        
+        print('%20s | %15d | %15d | %10d | %15d  ' % (str(i[0]),i[1],i[2],i[3],i[4]))
 
 for name_file in name_file_with_inf:
     info_in_f_Ecxel = get_info_in_f_Ecxel(useful_sheet, name_dir, name_file)
     empty_line_in_table = get_empty_line_in_table(useful_sheet, name_dir, name_file)
     all_list_leader_in_doc = get_all_list_leader_in_doc(empty_line_in_table, info_in_f_Ecxel)
 list_with_eff_leader = get_list_with_eff_leader(all_list_leader_in_doc)
+list_with_eff_leader_and_percent = add_percent_eff(list_with_eff_leader)
+
+        
+print_list_leader (list_with_eff_leader_and_percent) 
 
 
-print('Список специалистов выполняющих задание в срок')  
-# print(list_with_eff_leader)
-# Отсортировать список по соотношению (2 - 3)/1
 
-n = input('Сортировать специалиста в качестве руководителя по имени (1), по кол-ву проектов (2), по кол-ву проектов вып. в срок (3),  по кол-ву не проектов вып. в срок(4): ')
-n = int(n)-1
-# t = input('По возрастанию (0), по убыванию (1): ')
-# t = int(t)
-t = 1
-list_with_eff_leader.sort(key = lambda i: i[n], reverse=t)
-for i in list_with_eff_leader:
-    print('%20s | %3d | %4d | %3d' % (str(i[0]),i[1],i[2],i[3]))
+
+
     
