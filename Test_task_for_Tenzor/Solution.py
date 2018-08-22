@@ -120,5 +120,15 @@ list_with_eff_leader = get_list_with_eff_leader(all_list_leader_in_doc)
 
 
 print('Список специалистов выполняющих задание в срок')  
-print(list_with_eff_leader)
+# print(list_with_eff_leader)
 # Отсортировать список по соотношению (2 - 3)/1
+
+n = input('Сортировать специалиста в качестве руководителя по имени (1), по кол-ву проектов (2), по кол-ву проектов вып. в срок (3),  по кол-ву не проектов вып. в срок(4): ')
+n = int(n)-1
+# t = input('По возрастанию (0), по убыванию (1): ')
+# t = int(t)
+t = 1
+list_with_eff_leader.sort(key = lambda i: i[n], reverse=t)
+for i in list_with_eff_leader:
+    print('%20s | %3d | %4d | %3d' % (str(i[0]),i[1],i[2],i[3]))
+    
