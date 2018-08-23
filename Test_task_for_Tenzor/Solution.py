@@ -138,10 +138,10 @@ def print_list_leader(list_with_eff_leader_and_percent):
     # t = input('По возрастанию (0), по убыванию (1): ')
     # t = int(t)
     t = 1
-    list_with_eff_leader.sort(key = lambda i: i[n], reverse = t)
+    list_with_eff_leader_and_percent.sort(key = lambda i: i[n], reverse = t)
     print('%20s | %15s | %15s | %15s | %15s  ' % (
     'Ф.И.О', 'кол-во проектов', 'вып. в срок ', 'вып. не в срок', 'проценту выполения проекта в срок'))
-    for i in list_with_eff_leader:
+    for i in list_with_eff_leader_and_percent:
         print('%20s | %15d | %15d | %15d | %15d  ' % (str(i[0]), i[1], i[2], i[3], i[4]))
 
         
@@ -194,7 +194,8 @@ def get_list_all_info_in_f_Ecxel(name_file_with_inf):
         info_in_f_Ecxel = get_info_in_f_Ecxel(useful_sheet, name_dir, name_file)
         list_all_info_in_f_Ecxel.append(info_in_f_Ecxel)
         return list_all_info_in_f_Ecxel
-    
+ 
+'''Выводим список сотрудников, как исполнителей '''
 def get_print_list_employee():
     # Выбираем лист с полезной информацией (ЛИСТ1)
     useful_sheet = 0
@@ -203,6 +204,7 @@ def get_print_list_employee():
     # Получаем список названий файлов
     name_file_with_inf = os.listdir(path="./" + name_dir)
     list_all_info_in_f_Ecxel = []
+    all_list_employee_in_doc = []
     for name_file in name_file_with_inf:
         info_in_f_Ecxel = get_info_in_f_Ecxel(useful_sheet, name_dir, name_file)
         list_all_info_in_f_Ecxel.append(info_in_f_Ecxel)
@@ -220,36 +222,40 @@ def get_print_list_employee():
         #print(employee_name)
         for item_employee_name in employee_name:
             position_list = employee_name.index(item_employee_name)
+            #print (len(list_pl_fa_in_table))
             for item_list_pl_fa_in_table in range (0, len(list_pl_fa_in_table)):
-                list_employee = []
-                all_list_employee_in_doc = []
-                if list_pl_fa_in_table[item_list_pl_fa_in_table][position_list + 1] == '':
+                list_employee = []            
+                if list_pl_fa_in_table[item_list_pl_fa_in_table][1] == '':
+                    list_pl_fa_in_table[item_list_pl_fa_in_table].pop(1)
+                    list_pl_fa_in_table[item_list_pl_fa_in_table].pop(0)
                     continue
-                elif list_pl_fa_in_table[item_list_pl_fa_in_table][position_list] == '':
+                elif list_pl_fa_in_table[item_list_pl_fa_in_table][0] == '':
                     good_finish = 1
-                    bad_finish = 0                             
-                elif int(list_pl_fa_in_table[item_list_pl_fa_in_table][position_list]) >= int(list_pl_fa_in_table[item_list_pl_fa_in_table][position_list + 1]):                
+                    bad_finish = 0                 
+                    list_pl_fa_in_table[item_list_pl_fa_in_table].pop(1)
+                    list_pl_fa_in_table[item_list_pl_fa_in_table].pop(0)
+                elif int(list_pl_fa_in_table[item_list_pl_fa_in_table][0]) >= int(list_pl_fa_in_table[item_list_pl_fa_in_table][1]):                
                     good_finish = 1
                     bad_finish = 0
-                elif int(list_pl_fa_in_table[item_list_pl_fa_in_table][position_list]) < int(list_pl_fa_in_table[item_list_pl_fa_in_table][position_list + 1]):                
+                    list_pl_fa_in_table[item_list_pl_fa_in_table].pop(1)
+                    list_pl_fa_in_table[item_list_pl_fa_in_table].pop(0)
+                elif int(list_pl_fa_in_table[item_list_pl_fa_in_table][0]) < int(list_pl_fa_in_table[item_list_pl_fa_in_table][1]):                
                     good_finish = 0
                     bad_finish = 1
-                else:
-                    good_finish = 0
-                    bad_finish = 1
+                    list_pl_fa_in_table[item_list_pl_fa_in_table].pop(1)
+                    list_pl_fa_in_table[item_list_pl_fa_in_table].pop(0)
                 list_employee.append(item_employee_name)
                 list_employee.append(good_finish)
                 list_employee.append(bad_finish)
-#                 all_list_employee_in_doc.append(list_employee)
-                
                 if len(list_employee) != 0:
-                   print(list_employee)
+                    #print(list_employee)
+                    all_list_employee_in_doc.append(list_employee)
                 else:
                     continue
-                    
-    
-#             print (all_list_employee_in_doc)
-        
+    all_list_employee_in_doc = get_list_with_eff_leader(all_list_employee_in_doc)
+    all_list_employee_in_doc = add_percent_eff(all_list_employee_in_doc)  
+    print_list_leader (all_list_employee_in_doc) 
+
         
 
 
@@ -260,5 +266,3 @@ elif (user_enter == 2):
     get_print_list_employee() 
 else:
     print('ok')
-
-
