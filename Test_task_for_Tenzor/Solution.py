@@ -144,6 +144,13 @@ def print_list_leader(list_with_eff_leader_and_percent):
     for i in list_with_eff_leader:
         print('%20s | %15d | %15d | %15d | %15d  ' % (str(i[0]), i[1], i[2], i[3], i[4]))
 
+        
+'''Генерируем БД с 
+ФИО,
+кол-во проектов
+кол-во вып в срок
+кол-во не вып в срок'''
+
 def get_list_employee_name(name_file_with_inf):
     list_employee_name = []
     for item_inf in range(0, len(name_file_with_inf)):
@@ -154,61 +161,104 @@ def get_list_employee_name(name_file_with_inf):
         list_employee_inf = [[item_list_employee_name, 0, 0, 0] for item_list_employee_name in list_employee_name]
         return list_employee_inf
 
-# Выбираем лист с полезной информацией (ЛИСТ1)
-useful_sheet = 0
-# Название файла с EСXEL документами
-name_dir = 'staff_efficiency'
-# Получаем список названий файлов
-name_file_with_inf = os.listdir(path="./" + name_dir)
-# print(name_file_with_inf )
-
-'''
-Подумать о том как организовать этот кусок кода который выводит нам лучших специалистов как руководителей
-all_list_leader_in_doc = []
-for name_file in name_file_with_inf:
-    info_in_f_Ecxel = get_info_in_f_Ecxel(useful_sheet, name_dir, name_file)
-    empty_line_in_table = get_empty_line_in_table(useful_sheet, name_dir, name_file)
+'''Получаем список сотрудников ответсвенных за проект'''
+def get_print_list_leader():    
+    # Выбираем лист с полезной информацией (ЛИСТ1)
+    useful_sheet = 0
+    # Название файла с EСXEL документами
+    name_dir = 'staff_efficiency'
+    # Получаем список названий файлов
+    name_file_with_inf = os.listdir(path="./" + name_dir)
+    # print(name_file_with_inf )
+    all_list_leader_in_doc = []
+    for name_file in name_file_with_inf:
+        info_in_f_Ecxel = get_info_in_f_Ecxel(useful_sheet, name_dir, name_file)
+        empty_line_in_table = get_empty_line_in_table(useful_sheet, name_dir, name_file)
+        all_list_leader_in_doc = get_all_list_leader_in_doc(empty_line_in_table, info_in_f_Ecxel)
     all_list_leader_in_doc = get_all_list_leader_in_doc(empty_line_in_table, info_in_f_Ecxel)
-all_list_leader_in_doc = get_all_list_leader_in_doc(empty_line_in_table, info_in_f_Ecxel)
-list_with_eff_leader = get_list_with_eff_leader(all_list_leader_in_doc)
-list_with_eff_leader_and_percent = add_percent_eff(list_with_eff_leader)      
-print_list_leader (list_with_eff_leader_and_percent) 
+    list_with_eff_leader = get_list_with_eff_leader(all_list_leader_in_doc)
+    list_with_eff_leader_and_percent = add_percent_eff(list_with_eff_leader)      
+    print_list_leader (list_with_eff_leader_and_percent) 
+    
+    
 '''
-
-'''Создаем список на основе всез EXCEL файлов с параметрами 
+Создаем список на основе всез EXCEL файлов с параметрами 
 ФИО, 
 кол-во проектов,
 кол-во проектов выполненых в срок,
 кол-во проектов выполненых не в срок
 '''
+def get_list_all_info_in_f_Ecxel(name_file_with_inf):
+    list_all_info_in_f_Ecxel = []
+    for name_file in name_file_with_inf:
+        info_in_f_Ecxel = get_info_in_f_Ecxel(useful_sheet, name_dir, name_file)
+        list_all_info_in_f_Ecxel.append(info_in_f_Ecxel)
+        return list_all_info_in_f_Ecxel
+    
+def get_print_list_employee():
+    # Выбираем лист с полезной информацией (ЛИСТ1)
+    useful_sheet = 0
+    # Название файла с EСXEL документами
+    name_dir = 'staff_efficiency'
+    # Получаем список названий файлов
+    name_file_with_inf = os.listdir(path="./" + name_dir)
+    list_all_info_in_f_Ecxel = []
+    for name_file in name_file_with_inf:
+        info_in_f_Ecxel = get_info_in_f_Ecxel(useful_sheet, name_dir, name_file)
+        list_all_info_in_f_Ecxel.append(info_in_f_Ecxel)
+    for item_inf in range(0, len(name_file_with_inf)):
+        # print(list_all_info_in_f_Ecxel[item_inf][0])
+        # print(len(list_all_info_in_f_Ecxel[item_inf][0]) - 1)
+        # print(len(list_all_info_in_f_Ecxel[item_inf]))
+        employee_name = (list_all_info_in_f_Ecxel[item_inf][0][4 : len(list_all_info_in_f_Ecxel[item_inf][0])])
+        list_pl_fa_in_table = []
+        for item_in_f_Ecxel in range (2 , len(list_all_info_in_f_Ecxel[item_inf])):
+            list_with_plan_fact = list_all_info_in_f_Ecxel[item_inf][item_in_f_Ecxel][4: len(list_all_info_in_f_Ecxel[item_inf][0])]
+            list_pl_fa_in_table.append(list_with_plan_fact)
+        #print(list_pl_fa_in_table)
+        employee_name = [el for el, _ in groupby(employee_name)]
+        #print(employee_name)
+        for item_employee_name in employee_name:
+            position_list = employee_name.index(item_employee_name)
+            for item_list_pl_fa_in_table in range (0, len(list_pl_fa_in_table)):
+                list_employee = []
+                all_list_employee_in_doc = []
+                if list_pl_fa_in_table[item_list_pl_fa_in_table][position_list + 1] == '':
+                    continue
+                elif list_pl_fa_in_table[item_list_pl_fa_in_table][position_list] == '':
+                    good_finish = 1
+                    bad_finish = 0                             
+                elif int(list_pl_fa_in_table[item_list_pl_fa_in_table][position_list]) >= int(list_pl_fa_in_table[item_list_pl_fa_in_table][position_list + 1]):                
+                    good_finish = 1
+                    bad_finish = 0
+                elif int(list_pl_fa_in_table[item_list_pl_fa_in_table][position_list]) < int(list_pl_fa_in_table[item_list_pl_fa_in_table][position_list + 1]):                
+                    good_finish = 0
+                    bad_finish = 1
+                else:
+                    good_finish = 0
+                    bad_finish = 1
+                list_employee.append(item_employee_name)
+                list_employee.append(good_finish)
+                list_employee.append(bad_finish)
+#                 all_list_employee_in_doc.append(list_employee)
+                
+                if len(list_employee) != 0:
+                   print(list_employee)
+                else:
+                    continue
+                    
+    
+#             print (all_list_employee_in_doc)
+        
+        
 
-list_all_info_in_f_Ecxel = []
-for name_file in name_file_with_inf:
-    info_in_f_Ecxel = get_info_in_f_Ecxel(useful_sheet, name_dir, name_file)
-    list_all_info_in_f_Ecxel.append(info_in_f_Ecxel)
 
-# Генерирует БД
-# list_employee_inf = get_list_employee_name(name_file_with_inf)
-# print (list_employee_inf)
-
-
-
-
-for item_inf in range(0, len(name_file_with_inf)):
-    # print(list_all_info_in_f_Ecxel[item_inf][0])
-    # print(len(list_all_info_in_f_Ecxel[item_inf][0]) - 1)
-    # print(len(list_all_info_in_f_Ecxel[item_inf]))
-    employee_name = (list_all_info_in_f_Ecxel[item_inf][0][4 : len(list_all_info_in_f_Ecxel[item_inf][0])])
-    list_pl_fa_in_table = []
-    for item_in_f_Ecxel in range (2 , len(list_all_info_in_f_Ecxel[item_inf])):
-        list_with_plan_fact = list_all_info_in_f_Ecxel[item_inf][item_in_f_Ecxel][4: len(list_all_info_in_f_Ecxel[item_inf][0])]
-        list_pl_fa_in_table.append(list_with_plan_fact)
-    print(list_pl_fa_in_table)
-    employee_name = [el for el, _ in groupby(employee_name)]
-    print(employee_name)
-    for item_employee_name in employee_name:
-        position_list = employee_name.index(item_employee_name)
-        list_pl_fa_in_table
-        #ты остановился на том что хотел сформировать списки в которых будет фио колпр выпол, не выпол
+user_enter = int(input('Сортировать специалистов в качестве руководителя (1) \nСортировать специалистов в качестве исполнителя (2)'))
+if user_enter == 1:
+    get_print_list_leader() 
+elif (user_enter == 2):
+    get_print_list_employee() 
+else:
+    print('ok')
 
 
