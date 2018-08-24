@@ -92,7 +92,7 @@ def get_list_leader(all_list_leader_in_doc):
 def get_list_with_eff_leader(all_list_leader_in_doc):
     list_leader = get_list_leader(all_list_leader_in_doc)
     list_with_eff_leader = [[item_list_leader, 0, 0, 0] for item_list_leader in list_leader]
-    #     print(list_with_eff_leader)
+    # print(list_with_eff_leader)
     for item_list_leader in list_leader:
         for item_all_list_leader_in_doc in all_list_leader_in_doc:
             if item_list_leader == item_all_list_leader_in_doc[0]:
