@@ -43,7 +43,7 @@ info_in_f_Ecxel см.функцию get_info_in_f_Ecxel
 '''
 
 
-def get_all_list_leader_in_doc(empty_line_in_table, info_in_f_Ecxel):
+def get_all_list_leader_in_doc(empty_line_in_table, info_in_f_Ecxel, all_list_leader_in_doc):
     for i in range(2, empty_line_in_table):
         list_leader = []
         # print(info_in_f_Ecxel[i])
@@ -133,36 +133,27 @@ list_with_eff_leader_and_percent  [['Ф.И.О', 'кол-во проектов' ,
 def print_list_leader(list_with_eff_leader_and_percent):
     # print(list_with_eff_leader)
     n = input(
-        'Сортировать специалиста в качестве руководителя по имени (1), по кол-ву проектов (2), по кол-ву проектов вып. в срок (3),  по кол-ву проектов вып. не в срок(4),по проценту выполения проекта в срок(5): ')
+        'Сортировать специалистов\n'
+        '(1)по имени,\n'
+        '(2)по кол-ву проектов,\n'
+        '(3)по кол-ву проектов вып. в срок,\n'
+        '(4)по кол-ву проектов вып. не в срок,\n'
+        '(5)по проценту выполения проекта в срок.\n')
     n = int(n) - 1
     # t = input('По возрастанию (0), по убыванию (1): ')
     # t = int(t)
     t = 1
-    list_with_eff_leader_and_percent.sort(key = lambda i: i[n], reverse = t)
+    list_with_eff_leader_and_percent.sort(key=lambda i: i[n], reverse=t)
     print('%20s | %15s | %15s | %15s | %15s  ' % (
-    'Ф.И.О', 'кол-во проектов', 'вып. в срок ', 'вып. не в срок', 'проценту выполения проекта в срок'))
+        'Ф.И.О', 'кол-во проектов', 'вып. в срок ', 'вып. не в срок', 'проценту выполения проекта в срок'))
     for i in list_with_eff_leader_and_percent:
         print('%20s | %15d | %15d | %15d | %15d  ' % (str(i[0]), i[1], i[2], i[3], i[4]))
 
-        
-'''Генерируем БД с 
-ФИО,
-кол-во проектов
-кол-во вып в срок
-кол-во не вып в срок'''
-
-def get_list_employee_name(name_file_with_inf):
-    list_employee_name = []
-    for item_inf in range(0, len(name_file_with_inf)):
-        employee_name = (list_all_info_in_f_Ecxel[item_inf][0][4: len(list_all_info_in_f_Ecxel[item_inf][0])])
-        for item_employee_name in employee_name:
-            list_employee_name.append(item_employee_name)
-        list_employee_name = [el for el, _ in groupby(list_employee_name)]
-        list_employee_inf = [[item_list_employee_name, 0, 0, 0] for item_list_employee_name in list_employee_name]
-        return list_employee_inf
 
 '''Получаем список сотрудников ответсвенных за проект'''
-def get_print_list_leader():    
+
+
+def get_print_list_leader():
     # Выбираем лист с полезной информацией (ЛИСТ1)
     useful_sheet = 0
     # Название файла с EСXEL документами
@@ -174,28 +165,16 @@ def get_print_list_leader():
     for name_file in name_file_with_inf:
         info_in_f_Ecxel = get_info_in_f_Ecxel(useful_sheet, name_dir, name_file)
         empty_line_in_table = get_empty_line_in_table(useful_sheet, name_dir, name_file)
-        all_list_leader_in_doc = get_all_list_leader_in_doc(empty_line_in_table, info_in_f_Ecxel)
-    all_list_leader_in_doc = get_all_list_leader_in_doc(empty_line_in_table, info_in_f_Ecxel)
+        all_list_leader_in_doc = get_all_list_leader_in_doc(empty_line_in_table, info_in_f_Ecxel,
+                                                            all_list_leader_in_doc)
     list_with_eff_leader = get_list_with_eff_leader(all_list_leader_in_doc)
-    list_with_eff_leader_and_percent = add_percent_eff(list_with_eff_leader)      
-    print_list_leader (list_with_eff_leader_and_percent) 
-    
-    
-'''
-Создаем список на основе всез EXCEL файлов с параметрами 
-ФИО, 
-кол-во проектов,
-кол-во проектов выполненых в срок,
-кол-во проектов выполненых не в срок
-'''
-def get_list_all_info_in_f_Ecxel(name_file_with_inf):
-    list_all_info_in_f_Ecxel = []
-    for name_file in name_file_with_inf:
-        info_in_f_Ecxel = get_info_in_f_Ecxel(useful_sheet, name_dir, name_file)
-        list_all_info_in_f_Ecxel.append(info_in_f_Ecxel)
-        return list_all_info_in_f_Ecxel
- 
+    list_with_eff_leader_and_percent = add_percent_eff(list_with_eff_leader)
+    print_list_leader(list_with_eff_leader_and_percent)
+
+
 '''Выводим список сотрудников, как исполнителей '''
+
+
 def get_print_list_employee():
     # Выбираем лист с полезной информацией (ЛИСТ1)
     useful_sheet = 0
@@ -212,34 +191,37 @@ def get_print_list_employee():
         # print(list_all_info_in_f_Ecxel[item_inf][0])
         # print(len(list_all_info_in_f_Ecxel[item_inf][0]) - 1)
         # print(len(list_all_info_in_f_Ecxel[item_inf]))
-        employee_name = (list_all_info_in_f_Ecxel[item_inf][0][4 : len(list_all_info_in_f_Ecxel[item_inf][0])])
+        employee_name = (list_all_info_in_f_Ecxel[item_inf][0][4: len(list_all_info_in_f_Ecxel[item_inf][0])])
         list_pl_fa_in_table = []
-        for item_in_f_Ecxel in range (2 , len(list_all_info_in_f_Ecxel[item_inf])):
-            list_with_plan_fact = list_all_info_in_f_Ecxel[item_inf][item_in_f_Ecxel][4: len(list_all_info_in_f_Ecxel[item_inf][0])]
+        for item_in_f_Ecxel in range(2, len(list_all_info_in_f_Ecxel[item_inf])):
+            list_with_plan_fact = list_all_info_in_f_Ecxel[item_inf][item_in_f_Ecxel][
+                                  4: len(list_all_info_in_f_Ecxel[item_inf][0])]
             list_pl_fa_in_table.append(list_with_plan_fact)
-        #print(list_pl_fa_in_table)
+        # print(list_pl_fa_in_table)
         employee_name = [el for el, _ in groupby(employee_name)]
-        #print(employee_name)
+        # print(employee_name)
         for item_employee_name in employee_name:
-            position_list = employee_name.index(item_employee_name)
-            #print (len(list_pl_fa_in_table))
-            for item_list_pl_fa_in_table in range (0, len(list_pl_fa_in_table)):
-                list_employee = []            
+            # position_list = employee_name.index(item_employee_name)
+            # print (len(list_pl_fa_in_table))
+            for item_list_pl_fa_in_table in range(0, len(list_pl_fa_in_table)):
+                list_employee = []
                 if list_pl_fa_in_table[item_list_pl_fa_in_table][1] == '':
                     list_pl_fa_in_table[item_list_pl_fa_in_table].pop(1)
                     list_pl_fa_in_table[item_list_pl_fa_in_table].pop(0)
                     continue
                 elif list_pl_fa_in_table[item_list_pl_fa_in_table][0] == '':
                     good_finish = 1
-                    bad_finish = 0                 
+                    bad_finish = 0
                     list_pl_fa_in_table[item_list_pl_fa_in_table].pop(1)
                     list_pl_fa_in_table[item_list_pl_fa_in_table].pop(0)
-                elif int(list_pl_fa_in_table[item_list_pl_fa_in_table][0]) >= int(list_pl_fa_in_table[item_list_pl_fa_in_table][1]):                
+                elif int(list_pl_fa_in_table[item_list_pl_fa_in_table][0]) >= int(
+                        list_pl_fa_in_table[item_list_pl_fa_in_table][1]):
                     good_finish = 1
                     bad_finish = 0
                     list_pl_fa_in_table[item_list_pl_fa_in_table].pop(1)
                     list_pl_fa_in_table[item_list_pl_fa_in_table].pop(0)
-                elif int(list_pl_fa_in_table[item_list_pl_fa_in_table][0]) < int(list_pl_fa_in_table[item_list_pl_fa_in_table][1]):                
+                elif int(list_pl_fa_in_table[item_list_pl_fa_in_table][0]) < int(
+                        list_pl_fa_in_table[item_list_pl_fa_in_table][1]):
                     good_finish = 0
                     bad_finish = 1
                     list_pl_fa_in_table[item_list_pl_fa_in_table].pop(1)
@@ -248,21 +230,29 @@ def get_print_list_employee():
                 list_employee.append(good_finish)
                 list_employee.append(bad_finish)
                 if len(list_employee) != 0:
-                    #print(list_employee)
+                    # print(list_employee)
                     all_list_employee_in_doc.append(list_employee)
                 else:
                     continue
     all_list_employee_in_doc = get_list_with_eff_leader(all_list_employee_in_doc)
-    all_list_employee_in_doc = add_percent_eff(all_list_employee_in_doc)  
-    print_list_leader (all_list_employee_in_doc) 
-
-        
+    all_list_employee_in_doc = add_percent_eff(all_list_employee_in_doc)
+    print_list_leader(all_list_employee_in_doc)
 
 
-user_enter = int(input('Сортировать специалистов в качестве руководителя (1) \nСортировать специалистов в качестве исполнителя (2)'))
-if user_enter == 1:
-    get_print_list_leader() 
-elif (user_enter == 2):
-    get_print_list_employee() 
-else:
-    print('ok')
+num = 1
+while num < 2:
+    user_enter = int(input('(1)Сортировать специалистов в качестве руководителя\n'
+                           '(2)Сортировать специалистов в качестве исполнителя\n'
+                           '(0)Выход из консоли\n'))
+    if user_enter == 1:
+        get_print_list_leader()
+    elif user_enter == 2:
+        get_print_list_employee()
+    elif user_enter == 0:
+        print('Вы вышли из консоли')
+        break
+    else:
+        print('Вы выбали число без команды, введите число еще раз\n'
+              '(1)Сортировать специалистов в качестве руководителя\n'
+              '(2)Сортировать специалистов в качестве исполнителя\n'
+              '(0)Выход из консоли\n')
