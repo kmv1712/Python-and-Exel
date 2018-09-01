@@ -202,3 +202,38 @@ sort_all_list_name_account_date_nds = get_sort_all_list_name_account_date_nds(al
 
 # Функция добавления информации в таблицу
 add_info_in_main_f(empty_line_in_table, sort_all_list_name_account_date_nds)
+
+def _getOutCell(outSheet, colIndex, rowIndex):
+    """ HACK: Extract the internal xlwt cell representation. """
+    row = outSheet._Worksheet__rows.get(rowIndex)
+    if not row: return None
+
+    cell = row._Row__cells.get(colIndex)
+    return cell
+
+def setOutCell(outSheet, col, row, value):
+    """ Change cell value without changing formatting. """
+    # HACK to retain cell style.
+    previousCell = _getOutCell(outSheet, col, row)
+    # END HACK, PART I
+
+    outSheet.write(row, col, value)
+
+    # HACK, PART II
+    if previousCell:
+        newCell = _getOutCell(outSheet, col, row)
+        if newCell:
+            newCell.xf_idx = previousCell.xf_idx
+    # END HACK
+
+import xlrd
+import xlutils.copy
+inBook = xlrd.open_workbook('input.xls', formatting_info=True)
+outBook = xlutils.copy.copy(inBook)
+outSheet = outBook.get_sheet(0)
+setOutCell(outSheet, 5, 5, 'Test')
+outBook.save('output.xls')
+
+
+
+
