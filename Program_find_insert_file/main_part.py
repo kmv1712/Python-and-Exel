@@ -2,6 +2,8 @@ import os
 import xlrd
 import re
 import xlwings as xw
+import datetime as dt
+import tkinter as tk
 
 # Выбранна чтраница Уралтест в основной таблице
 name_sheet = 0
@@ -172,17 +174,59 @@ def get_sort_all_list_name_account_date_nds(all_list_name_account_date_nds):
 (F)дата
 (G)Сумма с НДС
 список вида [[номер_счета, дата, прибор, сумма с НДС], [-и-], ...]
+------15082018 ------
+1)Продумать закрытие и сохранение занесеных данных  | Решенно wb.save(), wb.close()
+2)Продумать чтобы данные заносились в ячейки и фильтр их сортировал верно
+---------------------
+------01092018 ------
+1)Продумать вопрос занесения даты и суммы с НДС с нужным форматом (дата, числовой) Решение через options(dates=dt.date)
+результата не дало!!!!
+2)Продумать вычесление ошибки при 
+распознание текста значение (7280 28, а надо 7280,28 )
+3)Необходим вывод окна для сохранения файла через wb.save()?
+4)Нужен ли wb.close()?
+---------------------
 """
-# Продумать закрытие и сохранение занесеных данных
-# 1508 Продумать чтобы данные заносились в ячейки и фильтр их сортировал верно
 def add_info_in_main_f(empty_line_in_table, sort_all_list_name_account_date_nds):
-    xw.Book('Уралтест.xlsx')
+    wb = xw.Book('Уралтест.xlsx')
     for i in range(0, len(sort_all_list_name_account_date_nds)):
         xw.Range('A' + str(empty_line_in_table)).value = sort_all_list_name_account_date_nds[i][2]
         xw.Range('E' + str(empty_line_in_table)).value = sort_all_list_name_account_date_nds[i][0]
-        xw.Range('F' + str(empty_line_in_table)).value = sort_all_list_name_account_date_nds[i][1]
-        xw.Range('G' + str(empty_line_in_table)).value = sort_all_list_name_account_date_nds[i][3]
+        xw.Range('F' + str(empty_line_in_table)).options(dates=dt.date).value = sort_all_list_name_account_date_nds[i][1]
+        xw.Range('G' + str(empty_line_in_table)).options(numbers=int).value = sort_all_list_name_account_date_nds[i][3]
         empty_line_in_table = empty_line_in_table + 1
+    # wb.save()
+    # wb.close()
+
+
+"""Выводит окно с списком вставляемой информации 
+01092018 
+1)Изучить tk Необходимо вывести окно с списком значений, 
+которые будем вставлять в таблицу(это необходимо, чтобы пользователь заранее видил ошибку)
+2)Повторить уроки по ООП. Стоит ли сейчас его исп-ть() ? 
+ """
+
+class Application(tk.Frame):
+    def __init__(self, master=None):
+        super().__init__(master)
+        self.pack()
+        self.create_widgets()
+
+    def create_widgets(self):
+        self.hi_there = tk.Tk()
+        self.hi_there.geometry("200x300")
+        self.hi_there["text"] = "Hello World\n(click me)"
+        self.hi_there["command"] = self.say_hi
+        self.hi_there.pack(side="top")
+
+        self.quit = tk.Button(self, text="Продолжить", fg="red",
+                              command=root.destroy)
+        self.quit.pack(side="bottom")
+
+    def say_hi(self):
+        print("hi there, everyone!")
+
+
 
 
 # Функция выводит список в списке с дангыми номер, дата, прибор, сумма с НДС
@@ -202,38 +246,4 @@ sort_all_list_name_account_date_nds = get_sort_all_list_name_account_date_nds(al
 
 # Функция добавления информации в таблицу
 add_info_in_main_f(empty_line_in_table, sort_all_list_name_account_date_nds)
-
-def _getOutCell(outSheet, colIndex, rowIndex):
-    """ HACK: Extract the internal xlwt cell representation. """
-    row = outSheet._Worksheet__rows.get(rowIndex)
-    if not row: return None
-
-    cell = row._Row__cells.get(colIndex)
-    return cell
-
-def setOutCell(outSheet, col, row, value):
-    """ Change cell value without changing formatting. """
-    # HACK to retain cell style.
-    previousCell = _getOutCell(outSheet, col, row)
-    # END HACK, PART I
-
-    outSheet.write(row, col, value)
-
-    # HACK, PART II
-    if previousCell:
-        newCell = _getOutCell(outSheet, col, row)
-        if newCell:
-            newCell.xf_idx = previousCell.xf_idx
-    # END HACK
-
-import xlrd
-import xlutils.copy
-inBook = xlrd.open_workbook('input.xls', formatting_info=True)
-outBook = xlutils.copy.copy(inBook)
-outSheet = outBook.get_sheet(0)
-setOutCell(outSheet, 5, 5, 'Test')
-outBook.save('output.xls')
-
-
-
 
