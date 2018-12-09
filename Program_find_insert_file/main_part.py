@@ -3,7 +3,7 @@ import xlrd
 import re
 import xlwings as xw
 
-# Выбранна чтраница Уралтест в основной таблице
+# Выбранна cтраница Уралтест в основной таблице
 name_sheet = 0
 # print(os.getcwd())
 # print(os.listdir(path="./transform_Exel"))
@@ -49,39 +49,43 @@ def get_number_account(item_one_info_in_account_f_Exel):
 3) Продумать, как собирать данные с ошибочным распознанием и применить их при дальнейшем использование программы 
 пример: распознал июл1 надо чтобы мы сохранили этот вариант и при следующем таком распознание мы получили 07, а не вариант с возможностью занести инф. самим
 '''
+
+
 # 11082018---------------1603
 def get_date_account(item_one_info_in_account_f_Exel):
     date_account = re.findall('(\d\d\s\w\w+\s\d\d\d\d)', item_one_info_in_account_f_Exel)
     for date_account_one in date_account:
         date_account = date_account_one
-    date_account = date_account.split(' ') 
-    if date_account [1] == 'января':
-        date_account [1] = '01'
-    elif date_account [1] == 'февраля':
-        date_account [1] = '02'
-    elif date_account [1] == 'марта':
-        date_account [1] = '03'
-    elif date_account [1] == 'апреля':
-        date_account [1] = '04'
-    elif date_account [1] == 'мая':
-        date_account [1] = '05'
-    elif date_account [1] == 'июня':
-        date_account [1] = '06'
-    elif date_account [1] == 'июля':
-        date_account [1] = '07'
-    elif date_account [1] == 'августа':
-        date_account [1] = '08'    
-    elif date_account [1] == 'сентября':
-        date_account [1] = '09'
-    elif date_account [1] == 'октября':
-        date_account [1] = '10'
-    elif date_account [1] == 'ноября':
-        date_account [1] = '11'
-    elif date_account [1] == 'декабря':
-        date_account [1] = '12'
+    date_account = date_account.split(' ')
+    if date_account[1] == 'января':
+        date_account[1] = '01'
+    elif date_account[1] == 'февраля':
+        date_account[1] = '02'
+    elif date_account[1] == 'марта':
+        date_account[1] = '03'
+    elif date_account[1] == 'апреля':
+        date_account[1] = '04'
+    elif date_account[1] == 'мая':
+        date_account[1] = '05'
+    elif date_account[1] == 'июня':
+        date_account[1] = '06'
+    elif date_account[1] == 'июля':
+        date_account[1] = '07'
+    elif date_account[1] == 'августа':
+        date_account[1] = '08'
+    elif date_account[1] == 'сентября':
+        date_account[1] = '09'
+    elif date_account[1] == 'октября':
+        date_account[1] = '10'
+    elif date_account[1] == 'ноября':
+        date_account[1] = '11'
+    elif date_account[1] == 'декабря':
+        date_account[1] = '12'
     else:
-        date_account [1] = input ('На экране указан нераспознаный месяц, если вы не можете его индефецировать то введите две цифры, соответсвующие этому месяцу, пример: 02')
-    date_account = (str(date_account [0]) + '.' + date_account [1] + '.' + str(date_account [2])) 
+        date_account[1] = input(
+            'На экране указан нераспознаный месяц, если вы не можете его индефецировать то введите две цифры, '
+            'соответсвующие этому месяцу, пример: 02')
+    date_account = (str(date_account[0]) + '.' + date_account[1] + '.' + str(date_account[2]))
     return date_account
 
 
@@ -151,6 +155,8 @@ def get_empty_line_in_table():
 """Функция генерирует список all_list_name_account_date_nds
 по след маске [[номер_счета, дата, прибор, сумма с НДС], [-и-], ...]
 """
+
+
 def get_sort_all_list_name_account_date_nds(all_list_name_account_date_nds):
     n = 0
     j = 4
@@ -173,6 +179,8 @@ def get_sort_all_list_name_account_date_nds(all_list_name_account_date_nds):
 (G)Сумма с НДС
 список вида [[номер_счета, дата, прибор, сумма с НДС], [-и-], ...]
 """
+
+
 # Продумать закрытие и сохранение занесеных данных
 # 1508 Продумать чтобы данные заносились в ячейки и фильтр их сортировал верно
 def add_info_in_main_f(empty_line_in_table, sort_all_list_name_account_date_nds):
@@ -181,7 +189,18 @@ def add_info_in_main_f(empty_line_in_table, sort_all_list_name_account_date_nds)
         xw.Range('A' + str(empty_line_in_table)).value = sort_all_list_name_account_date_nds[i][2]
         xw.Range('E' + str(empty_line_in_table)).value = sort_all_list_name_account_date_nds[i][0]
         xw.Range('F' + str(empty_line_in_table)).value = sort_all_list_name_account_date_nds[i][1]
-        xw.Range('G' + str(empty_line_in_table)).value = sort_all_list_name_account_date_nds[i][3]
+        '''Добавить модуль тнике для графического сообщения пользователю о не верно распозаной цене'''
+        sort_all_list_name_account_date_nds[i][3] = sort_all_list_name_account_date_nds[i][3].replace(' ', '')
+        check_price = sort_all_list_name_account_date_nds[i][3].split(',')
+        if len(check_price) == 2:
+            xw.Range('G' + str(empty_line_in_table)).value = sort_all_list_name_account_date_nds[i][3]
+        else:
+            user_check = input(
+                'Провертье цену, возможно ошибка при распознание СЧЕТ:{0} Распознаная цена:{1} '
+                'и введите цену если она не соответсвует цене в документе'
+                .format(sort_all_list_name_account_date_nds[i][0], sort_all_list_name_account_date_nds[i][3])
+            )
+            xw.Range('G' + str(empty_line_in_table)).value = user_check
         empty_line_in_table = empty_line_in_table + 1
 
 
